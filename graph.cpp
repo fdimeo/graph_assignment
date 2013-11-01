@@ -714,61 +714,65 @@ std::ostream &operator<< (std::ostream &cout, std::list<unsigned int> *path)
 {
    unsigned routeLen = path->size();
 
-   cout << "==== Shortest Route has " << routeLen << " nodes" << std::endl;
-
-   cout << "===== Shortest Route is : ";
-
-   // If there's no route, then it's empty
-   if (routeLen == 0)
+   if(path->size())
    {
-      cout << "empty";
-   }
-   else
-   {
+      cout << "==== Shortest Route has " << routeLen << " nodes" << std::endl;
+
+      cout << "===== Shortest Route is : ";
+
       // There's a valid route, so iterate through the list and print each member...
       for(std::list<unsigned int>::iterator listIt = path->begin(); listIt != path->end(); ++listIt)
       {
          cout << *listIt << " ";
       }
    }
-
+   else
+   {
+      std::cout << "No route found" << std::endl;
+   }
       
    return cout;
 }
 
+//#define USING_KNOWN_GRAPH
 
  int main()
  {
+
+#ifdef USING_KNOWN_GRAPH
+
+    int originNode = 1;
+    int destNode = 6;
+
+    std::cout << "Using a known graph for testing" << std::endl;
     
-    // {
-    //    Graph G;
+    Graph G;
 
-    //    G.addNode(1);
-    //    G.addEdge(1, 2, 1);
-    //    G.addEdge(1, 3, 3);
+    G.addNode(1);
+    G.addEdge(1, 2, 1);
+    G.addEdge(1, 3, 3);
 
-    //    G.addNode(2);
-    //    G.addEdge(2, 4, 1);
-    //    G.addEdge(2, 3, 1);
+    G.addNode(2);
+    G.addEdge(2, 4, 1);
+    G.addEdge(2, 3, 1);
 
-    //    G.addNode(3);
-    //    G.addEdge(3, 1, 1);
-    //    G.addEdge(3, 6, 4);
+    G.addNode(3);
+    G.addEdge(3, 1, 1);
+    G.addEdge(3, 6, 4);
+    G.addEdge(3, 5, 7);
 
-    //    G.addNode(4);
-    //    G.addEdge(4, 6, 5);
+    G.addNode(4);
+    G.addEdge(4, 6, 5);
 
-    //    G.addNode(5);
+    G.addNode(5);
 
-    //    G.addNode(6);
+    G.addNode(6);
 
-    //    //G.printGraph();  
-    
-    //    //
-    //    // run the dijkstra shortest path algorithm on the graph from node 1 to 4
-    //    //
-    //    G.doDijkstra(1, 6);
-    // }
+
+    G.printGraph();
+
+
+#else
 
     /* initialize random seed: */
     srand (time(NULL));
@@ -851,12 +855,18 @@ std::ostream &operator<< (std::ostream &cout, std::list<unsigned int> *path)
        std::cout <<"Graph has " << G.getNodeCount() << " nodes and " << G.getEdgeCount() << " indicies" << std::endl;
     }
 
+#endif
+
+    // an instance of a class that I would usually not have implemented...
     ShortestPathAlgo dijkstra;
 
     // this uses the ShortestPathAlgo class overloaded "<<" operator for (ostream &, unsigned int *)
     std::cout << dijkstra.path(G, originNode, destNode) << std::endl;
 
-    std::cout << "===== The shortest route cost is :" << dijkstra.path_size(G, originNode, destNode) << std::endl;
+    int path_size = dijkstra.path_size(G, originNode, destNode);
+
+    if(path_size > 0)
+       std::cout << "===== The shortest route cost is :" << path_size << std::endl;
 
     float averagePathCost = 0;
 
@@ -889,8 +899,7 @@ std::ostream &operator<< (std::ostream &cout, std::list<unsigned int> *path)
     else std::cout << "infinity";
 
     std::cout << std::endl;
-       
-   
+        
     return(1);
 
 }
